@@ -1,0 +1,29 @@
+---
+title: "LogisticRegression"
+output: html_document
+date: "2025-03-10"
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(root.dir = "/Users/aparnapetluri/Desktop/107")
+```
+
+Uploading the simulation data set
+```{r}
+load("data_for_visualization.RData")  # uploading dataset
+```
+
+Using logistic regression to see if there is any correlations.
+```{r}
+mod <- glm(Brand_binary ~ horsepower + price + fuel_efficiency + mileage +
+                        popularity + acceleration + insurance_cost + CO2_emissions,
+           family = binomial, data = cars_data)  
+summary(mod)
+```
+Based on this, I see that the coefficients represent the log-probabilities of the outcome variable (when Brand_binary = 1, it means you are choosing McLaren). Based on this, we can see that horsepower, price, fuel efficiency, C02 emissions, and popularity all have low p-values (less than 0.05), making them significant in a choice. Based on the coefficients of these variables, we can see that positive coefficient means that as the predictor increases, the probability of choosing a McLaren increases; when there is a negative coefficient, the probability of choosing Ferrari increases.
+
+Horsepower: If people are looking for a car with more horsepower, this increases the probability of choosing a Ferrari rather than McLaren. 
+Price: More expensive cars increase the probability of choosing McLaren.
+Fuel Efficiency: Higher fuel efficiency increases the probability of choosing Ferrari.
+Popularity: Higher popularity increases the probability of choosing Ferrari, meaning McLarens are more popular than Ferraris.  
+CO2 emissions: Higher CO2 emissions increases the probability of choosing McLaren rather than Ferrari. 

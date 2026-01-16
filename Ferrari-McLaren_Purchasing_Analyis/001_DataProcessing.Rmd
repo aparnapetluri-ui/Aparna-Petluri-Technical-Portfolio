@@ -1,0 +1,91 @@
+---
+title: "DataProcessing"
+output: html_document
+date: "2025-03-09"
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(root.dir = "/Users/aparnapetluri/Desktop/107")
+```
+
+```{r}
+source("00_requirements.R") # uploading libraries
+```
+
+```{r}
+cars <- read.csv("Elite-Sports-Cars-in-Data.csv")
+source("01_funct_DataCleaning.R") #cleaning data functions
+cars_clean <- remove_na(cars)
+cars_clean <- to_factors_and_numeric(cars)
+cars_clean
+```
+Since the data is synthetic, it can be useful to simulate some realistic consumer behaviors or preferences.
+
+# Calculate summary statistics for the mean and sd for each brand
+```{r}
+mean_by_brand <- cars_clean %>%
+  group_by(Brand) %>% # creating new variables from the grouo brand
+  summarise(
+    avg_horsepower = mean(Horsepower, na.rm = TRUE),
+    avg_price = mean(Price, na.rm = TRUE),
+    avg_fuel_efficiency = mean(Fuel_Efficiency, na.rm = TRUE),
+    avg_CO2_emissions = mean(CO2_Emissions, na.rm = TRUE),
+    avg_mileage = mean(Mileage, na.rm = TRUE),
+    avg_popularity = mean(as.numeric(Popularity), na.rm = TRUE),
+    avg_Acceleration_0_100 = mean(Acceleration_0_100, na.rm = TRUE),
+    avg_insurance_cost = mean(Insurance_Cost, na.rm = TRUE)
+  )  # getting the mean for each variable (na.rm = TRUE means to get rid of all r values)
+
+print(mean_by_brand)
+
+sd_by_brand <- cars_clean %>%
+  group_by(Brand) %>%
+  summarise(
+    sd_horsepower = sd(Horsepower, na.rm = TRUE),
+    sd_price = sd(Price, na.rm = TRUE),
+    sd_fuel_efficiency = sd(Fuel_Efficiency, na.rm = TRUE),
+    sd_CO2_emissions = sd(CO2_Emissions, na.rm = TRUE),
+    sd_mileage = sd(Mileage, na.rm = TRUE),
+    sd_popularity = sd(as.numeric(Popularity), na.rm = TRUE),
+    sd_Acceleration_0_100 = sd(as.numeric(Acceleration_0_100), na.rm = TRUE),
+    sd_insurance_cost = sd(Insurance_Cost, na.rm = TRUE)
+  ) # same logic as mean
+
+print(sd_by_brand)
+
+```
+
+Based on the means and standard deviations I made, I will make some simulation now. Using the Ferrari SDs because they are very similar.
+```{r}
+set.seed(42)
+
+n <- 5000
+brand <- sample(c("Ferrari", "McLaren"), n, replace = TRUE)
+horsepower <- rnorm(n, mean = ifelse(brand == "Ferrari", 822.2946, 792.0082), 
+                    sd = 406.0952)  # using rnorm to create random normal distribitions of all variables
+price <- rnorm(n, mean = ifelse(brand == "Ferrari", 256136.9, 267438.8), 
+               sd = 138760.5	)
+fuel_efficiency <- rnorm(n, mean = ifelse(brand == "Ferrari", 10.087054, 9.845885), 
+                   sd = 2.925170)
+mileage <- rnorm(n, mean = ifelse(brand == "Ferrari", 130336.6, 130683.8), 
+                 sd = 71719.78)
+popularity <- rnorm(n, mean = ifelse(brand == "Ferrari", 1.632270, 1.679012), 
+                    sd = 0.7123045)
+acceleration <- rnorm(n, mean = ifelse(brand == "Ferrari", 4.563415, 4.519959), 
+                    sd = 1.449161)
+insurance_cost <- rnorm(n, mean = ifelse(brand == "Ferrari", 7703.345, 7559.337), 
+                        sd = 4213.672)
+CO2_emissions <- rnorm(n, mean = ifelse(brand == "Ferrari", 272.4015, 279.1955), 
+                        sd = 99.75915)
+```
+
+Creating a data frame with simulated data
+```{r}
+cars_data <- data.frame(brand, horsepower, price, fuel_efficiency, mileage,
+                        popularity, acceleration, insurance_cost, CO2_emissions)
+# convert 'Brand' to binary (Ferrari = 0, McLaren = 1)
+cars_data$Brand_binary <- ifelse(cars_data$brand == "Ferrari", 0, 1)
+summary(cars_data)
+```
+
+

@@ -1,0 +1,151 @@
+---
+title: "DataVisualization"
+output: html_document
+date: "2025-03-10"
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(root.dir = "/Users/aparnapetluri/Desktop/107")
+```
+
+Uploading the simulation data set
+
+```{r}
+source("00_requirements.R") #uploading libraries
+save(cars_data, file = "data_for_visualization.RData")
+load("data_for_visualization.RData")
+```
+
+## Plotting a few visualizations to see how simulated features relate to the brand choice
+
+## Histograms
+
+Histogram of popularity distribution based on the brand name.
+
+```{r}
+png("Popularity.png", width = 800, height = 400)
+par(mfrow = c(1,2))
+# Histogram for Ferrari Popularity
+hist(cars_data$popularity[cars_data$Brand_binary == 0], 
+     main = "Popularity Distribution for Ferrari", 
+     xlab = "Popularity", col = "red")
+# Histogram for McLaren Popularity
+hist(cars_data$popularity[cars_data$Brand_binary == 1], 
+     main = "Popularity Distribution for McLaren", 
+     xlab = "Popularity", col = "blue")
+dev.off()
+par(mfrow = c(1,1))
+hist(cars_data$popularity[cars_data$Brand_binary == 0], 
+     main = "Popularity Distribution for Ferrari", 
+     xlab = "Popularity", col = "red")
+hist(cars_data$popularity[cars_data$Brand_binary == 1], 
+     main = "Popularity Distribution for McLaren", 
+     xlab = "Popularity", col = "blue")
+```
+
+From this, I can see that McLaren's popularity distribution is normal, while Ferrari's is slightly left-skewed.
+
+Trying the same to see if there is a difference in horsepower, as performance is one of my predictor variables for why people prefer one brand over another.
+
+```{r}
+# Histogram for Ferrari Horsepower
+hist(cars_data$horsepower[cars_data$Brand_binary == 0], 
+     main = "Horsepower Distribution for Ferrari", 
+     xlab = "Horsepower", col = "red")
+
+# Histogram for McLaren Horsepower
+hist(cars_data$horsepower[cars_data$Brand_binary == 1], 
+     main = "Horsepower Distribution for McLaren", 
+     xlab = "Horsepower", col = "blue")
+```
+
+The mean of McLaren's horsepower is higher, yet the graph shows higher variability as well.
+
+Attempting with price:
+
+```{r}
+png("Price.png", width = 800, height = 400)
+par(mfrow = c(1,2))
+# Histogram for Ferrari Price
+hist(cars_data$price[cars_data$Brand_binary == 0], 
+     main = "Price Distribution for Ferrari", 
+     xlab = "Price", col = "red")
+
+# Histogram for McLaren Price
+hist(cars_data$price[cars_data$Brand_binary == 1], 
+     main = "Price Distribution for McLaren", 
+     xlab = "Price", col = "blue")
+dev.off()
+par(mfrow = c(1,1))
+
+hist(cars_data$price[cars_data$Brand_binary == 0], 
+     main = "Price Distribution for Ferrari", 
+     xlab = "Price", col = "red")
+
+hist(cars_data$price[cars_data$Brand_binary == 1], 
+     main = "Price Distribution for McLaren", 
+     xlab = "Price", col = "blue")
+
+```
+
+McLaren seems to have higher prices as well!
+
+## Scatterplots
+
+Does horsepower seem to have an impact on popularity?
+
+```{r}
+# Histogram for Popularity with Horsepower Price
+png("PopHorsepower.png", width = 800, height = 400)
+plot(cars_data$horsepower, cars_data$popularity, 
+     main = "Popularity vs Horsepower", 
+     xlab = "Horsepower", 
+     ylab = "Popularity", 
+     col = ifelse(cars_data$Brand_binary == 0, "red", "blue"))
+legend("topright", legend = c("Ferrari", "McLaren"), 
+       col = c("red", "blue"), pch = 19)
+dev.off()
+
+plot(cars_data$horsepower, cars_data$popularity, 
+     main = "Popularity vs Horsepower", 
+     xlab = "Horsepower", 
+     ylab = "Popularity", 
+     col = ifelse(cars_data$Brand_binary == 0, "red", "blue"))
+legend("topright", legend = c("Ferrari", "McLaren"), 
+       col = c("red", "blue"), pch = 19)
+```
+
+There does not seem to be any correlation between horsepower and popularity. Additionally, there are no remarks about the different brands either.
+
+Does price have an impact on popularity?
+
+```{r}
+plot(cars_data$price, cars_data$popularity, 
+     main = "Popularity vs Price", 
+     xlab = "Price", 
+     ylab = "Popularity", 
+     col = ifelse(cars_data$Brand_binary == 0, "red", "blue"))
+legend("topright", legend = c("Ferrari", "McLaren"), 
+       col = c("red", "blue"), pch = 19)
+```
+
+Based on this, I am seeing no correlation between popularity and price.
+
+## Boxplot
+
+Popularity vs. Brand Name
+
+Before doing logistic regression, I wish to gain an understanding of if there are any correlations between the name of the brand and popularity. Since popularity is out of 4 (categorical), I would like to see this using a boxplot rather than a scatterplot!
+
+```{r}
+png("brandpop.png", width = 800, height = 400)
+boxplot(cars_data$Brand_binary, cars_data$popularity, 
+     main = "Popularity vs Brand Name", 
+     xlab = "Brand (0 = Ferrari, 1 = McLaren)", 
+     ylab = "Popularity")   
+dev.off()
+boxplot(cars_data$Brand_binary, cars_data$popularity, 
+     main = "Popularity vs Brand Name", 
+     xlab = "Brand (0 = Ferrari, 1 = McLaren)", 
+     ylab = "Popularity") 
+```

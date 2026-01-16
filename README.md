@@ -21,4 +21,3 @@ This project explores passenger survival on the Titanic using machine learning m
 # Task_Scheduler
 Through C++, Git, and GoogleTest, I collaborated in a team of four to implement a task manager, where users can input task data (titles, priority levels, due date, etc.) and the tasks will be displayed in the terminal, sorted based on priority, and includes a progress bar of a task's completion. I applied Object-Orientated design patterns to ensure code maintainability, and subsequently developed a comprehensive suite of unit tests using the GoogleTest framework to ensure 100% logic coverage and system stability. My team and I managed the full software development life cycle using GitHub for version control and easy collaboration.
 
-# 
